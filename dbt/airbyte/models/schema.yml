@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: airbyte_raw
+    description: Raw Airbyte loaded schema containing JSON FHIR bundles.
+    schema: '{{ env_var("AIRBYTE_RAW_SCHEMA", env_var("AIRBYTE_DESTINATION_NAMESPACE", "raw")) }}'
+    tables:
+      - name: '{{ env_var("AIRBYTE_RAW_TABLE", "_airbyte_raw_module_" ~ env_var("MODULE_ID", "unknown")) }}'
+        description: Raw FHIR bundles replicated from the source via Airbyte. The suffix is derived from the module identifier.
+
+models:
+  - name: stg_fhir_patients
+    description: Flattened representation of FHIR Patient resources used as the dimension table for analytics.
+    columns:
+      - name: patient_id
+        tests:
+          - not_null
+          - unique
+  - name: stg_fhir_observations
+    description: Parsed Observation resources with numeric value quantities and mapped clinical concepts.
+    columns:
+      - name: observation_id
+        tests:
+          - not_null
+          - unique
+      - name: patient_id
+        tests:
+          - not_null
+  - name: stg_fhir_conditions
+    description: Parsed Condition resources including ICD-10 codes and clinical status.
+    columns:
+      - name: condition_id
+        tests:
+          - not_null
+          - unique
+      - name: patient_id
+        tests:
+          - not_null
+  - name: stg_fhir_encounters
+    description: Parsed Encounter resources with encounter type categorisation and timings.
+    columns:
+      - name: encounter_id
+        tests:
+          - not_null
+          - unique
+      - name: patient_id
+        tests:
+          - not_null
+  - name: patient_observation_summary
+    description: Aggregated metrics per patient summarising observation counts and average value.
+  - name: patient_kpis
+    description: Headline patient counts and demographic KPIs required for the analytics dashboard.
+  - name: observation_metrics
+    description: Latest BMI and HbA1c metrics derived from Observation resources.
+  - name: condition_prevalence
+    description: Prevalence of active conditions (ICD-10) and patient counts used for top conditions charts.
+  - name: encounter_metrics
+    description: Admission and readmission rates computed from Encounter data.
+  - name: dashboard_metrics
+    description: Consolidated metrics powering the analytics dashboard (demographics, vitals, encounter rates).

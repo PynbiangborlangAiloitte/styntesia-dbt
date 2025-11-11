@@ -1,0 +1,14 @@
+airbyte_fhir_analytics:
+  target: env
+  outputs:
+    env:
+      type: postgres
+      host: '{{ env_var("DBT_HOST") }}'
+      port: '{{ env_var("DBT_PORT", "5432") | int }}'
+      user: '{{ env_var("DBT_USER") }}'
+      password: '{{ env_var("DBT_PASSWORD") }}'
+      dbname: '{{ env_var("DBT_DBNAME", env_var("DBT_DATABASE", "synthea_db")) }}'
+      schema: '{{ env_var("AIRBYTE_DESTINATION_NAMESPACE", "fhir_analysis") }}'
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 30

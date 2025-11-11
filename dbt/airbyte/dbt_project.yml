@@ -1,0 +1,20 @@
+name: 'airbyte_fhir_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'airbyte_fhir_analytics'
+
+model-paths: ['models']
+macro-paths: ['macros']
+analysis-paths: ['analysis']
+seed-paths: ['seeds']
+snapshot-paths: ['snapshots']
+test-paths: ['tests']
+
+target-path: 'target'
+clean-targets: ['target', 'dbt_packages']
+
+models:
+  airbyte_fhir_analytics:
+    +schema: '{{ env_var("AIRBYTE_DESTINATION_NAMESPACE", "fhir_analysis") }}'
+    +materialized: table
