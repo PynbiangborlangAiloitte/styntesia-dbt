@@ -3,12 +3,12 @@ normalize:
   outputs:
     env:
       type: postgres
-      host: '{{ env_var("DBT_HOST") }}'
+      host: '{{ env_var("DBT_HOST",host.docker.internal) }}'
       port: '{{ env_var("DBT_PORT", "5432") | int }}'
-      user: '{{ env_var("DBT_USER") }}'
-      password: '{{ env_var("DBT_PASSWORD") }}'
+      user: '{{ env_var("DBT_USER", "postgres") }}'
+      password: '{{ env_var("DBT_PASSWORD", "password") }}'
       dbname: '{{ env_var("DBT_DBNAME", env_var("DBT_DATABASE", "synthea_db")) }}'
-      schema: '{{ env_var("AIRBYTE_DESTINATION_NAMESPACE", "fhir_analysis") }}'
+      schema: '{{ env_var("AIRBYTE_DESTINATION_NAMESPACE", "public") }}'
       threads: 4
       keepalives_idle: 0
       connect_timeout: 30
