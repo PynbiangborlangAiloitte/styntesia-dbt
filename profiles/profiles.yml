@@ -1,4 +1,4 @@
-airbyte_fhir_analytics:
+normalize:
   target: env
   outputs:
     env:
